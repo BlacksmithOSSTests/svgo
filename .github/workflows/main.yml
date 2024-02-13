@@ -1,4 +1,4 @@
-name: CI
+name: SVGO CI
 env:
   FORCE_COLOR: 2
   NODE: 20
@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
   pull_request:
     branches:
       - main
@@ -16,10 +17,10 @@ permissions:
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-staging
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: ${{ env.NODE }}
           cache: yarn
@@ -28,10 +29,10 @@ jobs:
       - run: yarn typecheck
   regression:
     name: Test regressions
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-staging
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: ${{ env.NODE }}
           cache: yarn
@@ -48,12 +49,11 @@ jobs:
           - 18
           - 16
         os:
-          - ubuntu-latest
-          - windows-latest
+          - blacksmith-staging
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: useblacksmith/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
